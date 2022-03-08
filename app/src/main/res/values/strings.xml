@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Installment Tracking App</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+    <string name="email">email</string>
+    <string name="signup">signup</string>
+    <string name="installment_tracker">Installment Tracker</string>
+</resources>

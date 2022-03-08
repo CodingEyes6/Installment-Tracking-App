@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "663557369424",
+    "project_id": "installment-tracking-app",
+    "storage_bucket": "installment-tracking-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663557369424:android:81846da64916635195ab55",
+        "android_client_info": {
+          "package_name": "com.example.installmenttrackingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663557369424-nvc8peams9smqc699u1v87eha450bcjo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4IskV0nxn247cYUPHpVzbbJB4sDNHTq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663557369424-nvc8peams9smqc699u1v87eha450bcjo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
