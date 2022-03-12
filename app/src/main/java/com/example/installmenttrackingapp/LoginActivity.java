@@ -43,14 +43,20 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(LoginActivity.this, "called", Toast.LENGTH_SHORT).show();
 
         binding.login.setOnClickListener(new View.OnClickListener() {
+
+
+
             @Override
             public void onClick(View view) {
+
+                binding.progressBar.setVisibility(View.VISIBLE);
 
                 String email = Objects.requireNonNull(binding.email.getText()).toString();
                 String password = Objects.requireNonNull(binding.password.getText()).toString();
 
                 if (email.isEmpty() || password.isEmpty()) {
                Toast.makeText(getApplicationContext(),"Enter email and password",Toast.LENGTH_LONG).show();
+                    binding.progressBar.setVisibility(View.GONE);
                 }
 else{
                 Log.d("msg", email + " " + password);
@@ -58,11 +64,12 @@ else{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
+                            binding.progressBar.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), "Successful", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
+                            binding.progressBar.setVisibility(View.GONE);
                             Log.d("msg1", "no");
                             Toast.makeText(getApplicationContext(), "wrong credentials", Toast.LENGTH_SHORT).show();
                         }
