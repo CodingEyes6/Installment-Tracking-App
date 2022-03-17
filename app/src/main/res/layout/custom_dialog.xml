@@ -148,7 +148,7 @@
         android:id="@+id/cancelDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="Back"
         app:layout_constraintEnd_toStartOf="@+id/addCustomer"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"

@@ -71,7 +71,7 @@ else{
                         } else {
                             binding.progressBar.setVisibility(View.GONE);
                             Log.d("msg1", "no");
-                            Toast.makeText(getApplicationContext(), "wrong credentials", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "May be internet issue or wrong credentials", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

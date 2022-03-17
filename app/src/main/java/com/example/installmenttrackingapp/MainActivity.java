@@ -3,6 +3,8 @@ package com.example.installmenttrackingapp;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -17,8 +19,10 @@ import com.example.installmenttrackingapp.databinding.ActivityMainBinding;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -26,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private DatePickerDialog datePickerDialog;
+    private List<String> names;
+    private NamesAdapter adapter;
 
 
     @Override
@@ -33,11 +39,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        names = new ArrayList<>();
         initDatePicker();
 
         setTitle();
 
         addNewPerson();
+
+        adapter = new NamesAdapter(names,this);
+        GridLayoutManager manager = new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false);
+        binding.namesRV.setLayoutManager(manager);
+        binding.namesRV.setAdapter(adapter);
+
+
 
     }
 
@@ -105,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
                         int year = cal.get(Calendar.YEAR);
                         int month = cal.get(Calendar.MONTH);
                         int day = cal.get(Calendar.DAY_OF_MONTH);
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(MainActivity.this,R.style.dialogSTyleStyle, new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                                 dateDialog.setText(i + "/" + (i1 + 1) + "/" + i2);
@@ -119,9 +134,8 @@ public class MainActivity extends AppCompatActivity {
                 addCustomerBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                     binding.name.setText(customerName.getText().toString());
-                        binding.productNameActivity.setText(customerProductName.getText().toString());
-                        binding.name.setText(customerAdvancedAMount.getText().toString());
+                   names.add(customerName.getText().toString());
+                   adapter.notifyDataSetChanged();
                     }
                 });
 

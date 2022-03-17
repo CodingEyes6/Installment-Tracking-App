@@ -13,4 +13,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="dialogSTyleStyle" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorAccent">@color/red</item>
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        .. other
+    </style>
 </resources>
