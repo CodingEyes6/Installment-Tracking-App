@@ -1,5 +1,6 @@
 package com.example.installmenttrackingapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +13,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.installmenttrackingapp.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private DatePickerDialog datePickerDialog;
     private List<String> names;
     private NamesAdapter adapter;
+    private DatabaseReference reference;
+    private List<Customer> customers;
 
 
     @Override
@@ -40,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         names = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference().child("Customers");
         initDatePicker();
 
         setTitle();
@@ -96,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 TextInputEditText customerAdvancedAMount = mView.findViewById(R.id.advanceAmount);
                 TextInputEditText customerTotalAMount = mView.findViewById(R.id.totalAmount);
                 TextInputEditText customerProductName = mView.findViewById(R.id.productName);
+                ProgressBar progressBar = mView.findViewById(R.id.customerProgressBAr);
                 Button addCustomerBtn = mView.findViewById(R.id.addCustomer);
                 Button cancelDialog = mView.findViewById(R.id.cancelDialog);
                 TextView dateDialog = mView.findViewById(R.id.date);
@@ -134,6 +145,22 @@ public class MainActivity extends AppCompatActivity {
                 addCustomerBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        progressBar.setVisibility(View.VISIBLE);
+                   Customer customer = new Customer(customerName.getText().toString(),customerPhoneNo.getText().toString(),customerAddress.getText().toString(),customerAdvancedAMount.getText().toString(),customerTotalAMount.getText().toString(),customerProductName.getText().toString());
+                   reference.push().setValue(customer).addOnCompleteListener(new OnCompleteListener<Void>() {
+                       @Override
+                       public void onComplete(@NonNull Task<Void> task) {
+                           if(task.isSuccessful()){
+                               progressBar.setVisibility(View.INVISIBLE);
+                               Toast.makeText(MainActivity.this, "data added", Toast.LENGTH_SHORT).show();
+                           }
+                           else{
+
+                               progressBar.setVisibility(View.INVISIBLE);
+                               Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                           }
+                       }
+                   });
                    names.add(customerName.getText().toString());
                    adapter.notifyDataSetChanged();
                     }
