@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
@@ -19,11 +21,15 @@ import android.widget.Toast;
 
 
 import com.example.installmenttrackingapp.databinding.ActivityMainBinding;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private DatePickerDialog datePickerDialog;
-    private List<String> names;
+
+ //   private NamesAdapter adapter;
     private NamesAdapter adapter;
     private DatabaseReference reference;
     private List<Customer> customers;
@@ -48,21 +55,77 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        names = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference().child("Customers");
+        customers = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference("Customers");
+        GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), 2, LinearLayoutManager.VERTICAL, false);
+        binding.namesRV.setLayoutManager(manager);
+        binding.mainProgress.setVisibility(View.VISIBLE);
+
+
+
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    for (DataSnapshot npsnapshot : snapshot.getChildren()) {
+                        Customer customer = npsnapshot.getValue(Customer.class);
+                        Log.d("msg", customer.getName());
+                        Log.d("customer", customer.getName());
+                        if(!isExist(customer.getName())) {
+                            customers.add(customer);
+                        }
+
+                    }
+
+                    adapter = new NamesAdapter(customers, getApplicationContext());
+                    binding.namesRV.setAdapter(adapter);
+                    binding.mainProgress.setVisibility(View.INVISIBLE);
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+//            FirebaseRecyclerOptions<Customer> options = new FirebaseRecyclerOptions.Builder<Customer>()
+//                    .setQuery(reference,Customer.class).build();
+//            adapter = new CustomerAdapter(options);
+
+
+
+
+
+
         initDatePicker();
 
         setTitle();
 
         addNewPerson();
 
-        adapter = new NamesAdapter(names,this);
-        GridLayoutManager manager = new GridLayoutManager(this,2, LinearLayoutManager.VERTICAL,false);
-        binding.namesRV.setLayoutManager(manager);
-        binding.namesRV.setAdapter(adapter);
+       // adapter = new NamesAdapter(names,this);
 
 
 
+
+    }
+
+    public boolean isExist(String strNama) {
+
+        for (int i = 0; i < customers.size(); i++) {
+            if (customers.get(i).getName().equals(strNama)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void initDatePicker() {
@@ -152,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                        public void onComplete(@NonNull Task<Void> task) {
                            if(task.isSuccessful()){
                                progressBar.setVisibility(View.INVISIBLE);
+                               alertDialog.dismiss();
                                Toast.makeText(MainActivity.this, "data added", Toast.LENGTH_SHORT).show();
                            }
                            else{
@@ -161,8 +225,8 @@ public class MainActivity extends AppCompatActivity {
                            }
                        }
                    });
-                   names.add(customerName.getText().toString());
-                   adapter.notifyDataSetChanged();
+//                   names.add(customerName.getText().toString());
+//                   adapter.notifyDataSetChanged();
                     }
                 });
 

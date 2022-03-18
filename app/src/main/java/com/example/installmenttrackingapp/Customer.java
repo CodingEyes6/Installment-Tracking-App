@@ -5,6 +5,8 @@ public class Customer {
 
     String name,phoneNO,address,advanceAmount,TotalAmount,ProductName;
 
+  public    Customer(){}
+
     public Customer(String name, String phoneNO, String address, String advanceAmount, String totalAmount, String productName) {
         this.name = name;
         this.phoneNO = phoneNO;
