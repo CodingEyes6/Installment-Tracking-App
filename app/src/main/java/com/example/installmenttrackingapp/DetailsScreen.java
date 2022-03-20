@@ -39,7 +39,14 @@ String data = getIntent().getStringExtra("id");
              for (DataSnapshot issue : snapshot.getChildren()) {
                  // do something with the individual "issues"
                  Customer customer = issue.getValue(Customer.class);
-                 binding.check.setText(customer.address);
+                 binding.detailName.setText(customer.getName());
+                 binding.detailAddress.setText(customer.getAddress());
+                 binding.detailPhoneNo.setText(customer.getPhoneNO());
+                 binding.detailProductName.setText(customer.getProductName());
+                 binding.detailAdvanceAmount.setText(customer.getAdvanceAmount());
+                 binding.detailTotalAmount.setText(customer.getTotalAmount());
+                 binding.detailDate.setText(customer.getDate());
+
              }
          }
      }

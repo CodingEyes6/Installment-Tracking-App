@@ -85,8 +85,8 @@ else{
     @Override
     protected void onStart() {
         super.onStart();
-        if(mAuth != null){
-            startActivity(new Intent(LoginActivity.this,MainActivity.class));
-        }
+//        if(mAuth != null){
+//            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+//        }
     }
 }
