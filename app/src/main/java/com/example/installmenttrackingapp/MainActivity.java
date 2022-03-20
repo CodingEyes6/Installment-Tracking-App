@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.core.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,14 +49,18 @@ public class MainActivity extends AppCompatActivity {
     private NamesAdapter adapter;
     private DatabaseReference reference;
     private List<Customer> customers;
+    private List<String> keys;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         customers = new ArrayList<>();
+        keys = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference("Customers");
         GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), 2, LinearLayoutManager.VERTICAL, false);
         binding.namesRV.setLayoutManager(manager);
@@ -70,20 +75,29 @@ public class MainActivity extends AppCompatActivity {
                 if(snapshot.exists()) {
                     for (DataSnapshot npsnapshot : snapshot.getChildren()) {
                         Customer customer = npsnapshot.getValue(Customer.class);
-                        Log.d("msg", customer.getName());
-                        Log.d("customer", customer.getName());
-                        if(!isExist(customer.getName())) {
+
+                        Log.d("msg", npsnapshot.getKey());
+                        if(!isExist(npsnapshot.getKey())) {
                             customers.add(customer);
+                            keys.add(npsnapshot.getKey());
                         }
 
                     }
 
+
+
                     adapter = new NamesAdapter(customers, getApplicationContext());
+
+
                     binding.namesRV.setAdapter(adapter);
                     binding.mainProgress.setVisibility(View.INVISIBLE);
 
 
 
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "No data exist", Toast.LENGTH_SHORT).show();
+                    binding.mainProgress.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -117,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public boolean isExist(String strNama) {
+    public boolean isExist(String key) {
 
-        for (int i = 0; i < customers.size(); i++) {
-            if (customers.get(i).getName().equals(strNama)) {
+        for (int i = 0; i < keys.size(); i++) {
+            if (keys.get(i).equals(key)) {
                 return true;
             }
         }
@@ -209,22 +223,52 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         progressBar.setVisibility(View.VISIBLE);
-                   Customer customer = new Customer(customerName.getText().toString(),customerPhoneNo.getText().toString(),customerAddress.getText().toString(),customerAdvancedAMount.getText().toString(),customerTotalAMount.getText().toString(),customerProductName.getText().toString());
-                   reference.push().setValue(customer).addOnCompleteListener(new OnCompleteListener<Void>() {
-                       @Override
-                       public void onComplete(@NonNull Task<Void> task) {
-                           if(task.isSuccessful()){
-                               progressBar.setVisibility(View.INVISIBLE);
-                               alertDialog.dismiss();
-                               Toast.makeText(MainActivity.this, "data added", Toast.LENGTH_SHORT).show();
-                           }
-                           else{
+if(customerName.getText().toString().isEmpty()){
+    Toast.makeText(MainActivity.this, "Please enter name", Toast.LENGTH_SHORT).show();
+    progressBar.setVisibility(View.INVISIBLE);
+}
+else if(customerPhoneNo.getText().toString().isEmpty()){
+    Toast.makeText(MainActivity.this, "Please enter Phone No", Toast.LENGTH_SHORT).show();
+    progressBar.setVisibility(View.INVISIBLE);
+}
+else if(customerAddress.getText().toString().isEmpty()){
+    Toast.makeText(MainActivity.this, "Please enter address", Toast.LENGTH_SHORT).show();
+    progressBar.setVisibility(View.INVISIBLE);
+}
+else if(customerAdvancedAMount.getText().toString().isEmpty()){
+    Toast.makeText(MainActivity.this, "Please enter advance Amount", Toast.LENGTH_SHORT).show();
+    progressBar.setVisibility(View.INVISIBLE);
+}
+else if(customerTotalAMount.getText().toString().isEmpty()){
+    Toast.makeText(MainActivity.this, "Please enter Total Amount", Toast.LENGTH_SHORT).show();
+    progressBar.setVisibility(View.INVISIBLE);
+}
+else if(customerProductName.getText().toString().isEmpty()){
+    Toast.makeText(MainActivity.this, "Please enter product name", Toast.LENGTH_SHORT).show();
+    progressBar.setVisibility(View.INVISIBLE);
+}
+else if(formattedDate.equals(dateDialog.getText().toString())){
+    Toast.makeText(MainActivity.this, "Please enter address", Toast.LENGTH_SHORT).show();
+    progressBar.setVisibility(View.INVISIBLE);
+}
+else {
+    String key = reference.push().getKey();
+    Customer customer = new Customer(key,customerName.getText().toString(), customerPhoneNo.getText().toString(), customerAddress.getText().toString(), customerAdvancedAMount.getText().toString(), customerTotalAMount.getText().toString(), customerProductName.getText().toString(), dateDialog.getText().toString());
+    reference.child(key).setValue(customer).addOnCompleteListener(new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if (task.isSuccessful()) {
+                progressBar.setVisibility(View.INVISIBLE);
+                alertDialog.dismiss();
+                Toast.makeText(MainActivity.this, "data added", Toast.LENGTH_SHORT).show();
+            } else {
 
-                               progressBar.setVisibility(View.INVISIBLE);
-                               Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
-                           }
-                       }
-                   });
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(MainActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    });
+}
 //                   names.add(customerName.getText().toString());
 //                   adapter.notifyDataSetChanged();
                     }

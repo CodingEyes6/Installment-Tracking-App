@@ -3,17 +3,19 @@ package com.example.installmenttrackingapp;
 public class Customer {
 
 
-    String name,phoneNO,address,advanceAmount,TotalAmount,ProductName;
+    String id,name,phoneNO,address,advanceAmount,totalAmount,productName,date;
 
   public    Customer(){}
 
-    public Customer(String name, String phoneNO, String address, String advanceAmount, String totalAmount, String productName) {
+    public Customer(String id,String name, String phoneNO, String address, String advanceAmount, String totalAmount, String productName,String date) {
         this.name = name;
         this.phoneNO = phoneNO;
         this.address = address;
         this.advanceAmount = advanceAmount;
-        TotalAmount = totalAmount;
-        ProductName = productName;
+        this.date = date;
+        this.totalAmount = totalAmount;
+        this.productName = productName;
+        this.id = id;
     }
 
 
@@ -50,18 +52,34 @@ public class Customer {
     }
 
     public String getTotalAmount() {
-        return TotalAmount;
+        return totalAmount;
     }
 
     public void setTotalAmount(String totalAmount) {
-        TotalAmount = totalAmount;
+        this.totalAmount = totalAmount;
     }
 
     public String getProductName() {
-        return ProductName;
+        return productName;
     }
 
     public void setProductName(String productName) {
-        ProductName = productName;
+        this.productName = productName;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
